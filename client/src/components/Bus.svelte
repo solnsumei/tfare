@@ -1,5 +1,5 @@
 <script>
-  export let bus
+  export let bus;
 </script>
 
 <div class="bus">
@@ -8,4 +8,3 @@
   <p>Online Booking: {bus.onlineBookingPrice}</p>
   <hr>
 </div>
-

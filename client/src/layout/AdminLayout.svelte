@@ -1,14 +1,23 @@
 <script>
+	import { onMount, afterUpdate } from 'svelte';
 	import { Route } from 'svelte-router-spa';
+
+	import { logoutUser, navigateToRoute, setAuthHeader } from '../utils/helpers';
 
 
 	export let currentRoute;
 	export let params;
 
 	let toggled = false;
+	$: pageName = currentRoute.childRoute.name;
 
-	function toggleMenu () {
+	const toggleMenu = () => {
 		toggled = !toggled;
+	}
+
+	const logout = () => {
+		logoutUser();
+		navigateToRoute('login');
 	}
 </script>
 
@@ -35,8 +44,16 @@
 		min-width: 100vw;
 	}
 
+	:global(.top-margin) {
+		margin-top: 15px !important;
+	}
+
 	.toggled #sidebar-wrapper {
 		margin-left: 0;
+	}
+
+	.selected {
+    background-color: #d5d4d4 !important;
 	}
 
 	@media (min-width: 768px) {
@@ -60,7 +77,18 @@
   <div class="bg-light border-right" id="sidebar-wrapper">
 		<div class="sidebar-heading">Admin </div>
 		<div class="list-group list-group-flush">
-			<a href="/admin" class="list-group-item list-group-item-action bg-light">Dashboard</a>
+			<a href="/admin" class="list-group-item list-group-item-action bg-light {pageName == '/admin/index' ? 'selected': ''}">
+				Dashboard
+			</a>
+			<a href="/admin/cities" class="list-group-item list-group-item-action bg-light {pageName == '/admin/cities' ? 'selected': ''}">
+				Cities
+			</a>
+			<a href="/admin/companies" class="list-group-item list-group-item-action bg-light {pageName == '/admin/companies' ? 'selected': ''}">
+				Companies
+			</a>
+			<button on:click={logout} class="list-group-item list-group-item-action bg-light">
+				Logout
+			</button>
 		</div>
 	</div>
   <!-- /#sidebar-wrapper -->

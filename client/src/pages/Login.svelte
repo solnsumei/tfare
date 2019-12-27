@@ -1,5 +1,5 @@
 <script>
-	import { loginUser } from '../services/api';
+	import { loginUser } from '../services/public';
 	import { navigateToRoute } from '../utils/helpers';
 
 
@@ -37,11 +37,11 @@
           {/if}
           <div class="form-group">
             <label for="email">Email address</label>
-            <input bind:value={email} type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email" required/>
+            <input bind:value={email} autocomplete="email" type="email" class="form-control" aria-describedby="emailHelp" placeholder="Enter email" required/>
           </div>
           <div class="form-group">
             <label for="password">Password</label>
-            <input bind:value={password} type="password" class="form-control" placeholder="Password" required/>
+            <input bind:value={password} autocomplete="current-password" type="password" class="form-control" placeholder="Password" required/>
           </div>
 
           <button class="btn btn-primary">Log in</button>

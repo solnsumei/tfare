@@ -1,6 +1,6 @@
 <script>
   import { onMount, afterUpdate } from 'svelte';
-  import { getCities, getParks, searchBuses } from '../services/api';
+  import { getCities, getParks, searchBuses } from '../services/public';
   import SearchForm from '../components/SearchForm.svelte';
   import BusRoutes from '../components/BusRoutes.svelte';
 

@@ -1,5 +1,5 @@
 import adminRoutes from './adminRoutes';
-import { TOKEN, isAuthenticated, isGuest } from '../utils/helpers';
+import { isAuthenticated, isGuest } from '../utils/helpers';
 
 import SiteLayout from '../layout/SiteLayout.svelte';
 import AdminLayout from '../layout/AdminLayout.svelte';

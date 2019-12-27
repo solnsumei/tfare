@@ -1,9 +1,9 @@
 <script>
   import { afterUpdate, createEventDispatcher } from 'svelte';
-  import { getParks, searchBuses } from '../services/api';
+  import { getParks, searchBuses } from '../services/public';
 
   const dispatch = createEventDispatcher();
-  
+
   export let cities;
 
   let fromCity = '';
@@ -21,14 +21,14 @@
       parks = [...data.parks];
     }
   });
-  
+
   $: if (fromCity && toCity
     && fromCity.id && toCity.id) {
       enableSubmit = true;
     } else {
       enableSubmit = false;
     }
-  
+
   const handleFromCityChange = () => {
     if (toCity && toCity.id) {
       toCity = '';
@@ -57,7 +57,7 @@
         {/if}
       </select>
     </div>
-  </div>    
+  </div>
   <div class="col-sm-3">
     <div class="form-group">
       <label for=to>To</label>
@@ -90,5 +90,5 @@
     <button on:click={search} disabled={!enableSubmit} class="btn btn-primary">
       Find Bus
     </button>
-  </div>    
+  </div>
 </div>

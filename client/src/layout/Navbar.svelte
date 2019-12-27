@@ -1,5 +1,8 @@
 <script>
-  import { Navigate } from 'svelte-router-spa';
+	import { Navigate } from 'svelte-router-spa';
+	import { isLoggedIn } from '../stores/app';
+
+	console.log('>>>>>>>', $isLoggedIn);
 </script>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -17,8 +20,14 @@
         <li class="nav-item">
           <Navigate to="/about"><span class="nav-link">About</span></Navigate>
         </li>
+      </ul>
+			<ul class="navbar-nav ml-md-auto">
         <li class="nav-item">
-          <Navigate to="/login"><span class="nav-link">Log in</span></Navigate>
+					{#if ($isLoggedIn)}
+						<Navigate to="/admin"><span class="nav-link">Dashboard</span></Navigate>
+					{:else}
+						<Navigate to="/login"><span class="nav-link">Log in</span></Navigate>
+					{/if}
         </li>
       </ul>
     </div>

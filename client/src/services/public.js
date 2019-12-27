@@ -1,17 +1,12 @@
-import axios from 'axios';
-import { TOKEN, validateAuthError } from '../utils/helpers';
-import { user } from '../stores/app';
+import { axios, validateAuthError, authenticateUser } from '../utils/helpers';
 
-
-axios.defaults.baseURL = 'http://tfare.test/api/v1';
-axios.defaults.headers.common['Content-Type'] = 'application/json';
-
+// Public routes
 export const getCities = async () => {
   try {
     const response = await axios.get('/cities');
     return response.data;
   } catch (err) {
-    console.log(err.message);
+    throw err;
   }
 };
 
@@ -20,7 +15,7 @@ export const getParks = async (cityId) => {
     const response = await axios.get(`/cities/${cityId}/parks`);
     return response.data;
   } catch (err) {
-    console.log(err.message);
+    throw err;
   }
 };
 
@@ -35,20 +30,17 @@ export const searchBuses = async (from, to, park) => {
     const response = await axios.get(url);
     return response.data;
   } catch (err) {
-    console.log(err.message);
+    throw err;
   }
 };
 
 export const loginUser = async ({ email, password }) => {
   try {
     const response = await axios.post('/login', { email, password });
-
-    localStorage.setItem(TOKEN, response.data.token);
-    user.authenticate(response.data.user);
-
+    authenticateUser(response.data);
     return 'success';
   } catch (err) {
-    validateAuthError(err, axios);
+    validateAuthError(err);
     throw err;
   }
 };
