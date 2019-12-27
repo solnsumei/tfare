@@ -1,8 +1,6 @@
 <script>
 	import { Navigate } from 'svelte-router-spa';
 	import { isLoggedIn } from '../stores/app';
-
-	console.log('>>>>>>>', $isLoggedIn);
 </script>
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">

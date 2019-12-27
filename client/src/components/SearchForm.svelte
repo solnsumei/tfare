@@ -1,6 +1,7 @@
 <script>
   import { afterUpdate, createEventDispatcher } from 'svelte';
-  import { getParks, searchBuses } from '../services/public';
+	import { getParks, searchBuses } from '../services/public';
+	import SelectInput from './SelectInput.svelte';
 
   const dispatch = createEventDispatcher();
 
@@ -46,43 +47,29 @@
 
 <div class="row">
   <div class="col-sm-3">
-    <div class="form-group">
-      <label for="from">From</label>
-      <select bind:value={fromCity} on:change={handleFromCityChange} class="form-control" id="from">
-        <option value=''> -- Select -- </option>
-        {#if cities && cities.length > 0}
-          {#each cities as city}
-            <option value={city}>{city.name}</option>
-          {/each}
-        {/if}
-      </select>
-    </div>
+		<SelectInput
+			defaultOption={true}
+			bind:selectedValue={fromCity}
+			isObjectList={true}
+			itemList={cities}
+			on:change={handleFromCityChange}
+			label='From' />
   </div>
   <div class="col-sm-3">
-    <div class="form-group">
-      <label for=to>To</label>
-      <select bind:value={toCity} class="form-control" id="to">
-        <option value=''> -- Select -- </option>
-        {#if filteredCity && filteredCity.length > 0}
-          {#each filteredCity as city}
-            <option value={city}>{city.name}</option>
-          {/each}
-        {/if}
-      </select>
-    </div>
+		<SelectInput
+			defaultOption={true}
+			bind:selectedValue={toCity}
+			isObjectList={true}
+			itemList={filteredCity}
+			label='To' />
   </div>
   <div class="col-sm-3">
-    <div class="form-group">
-      <label for="parks">Nearest Bus Park</label>
-      <select bind:value={selectedPark} class="form-control" id="park">
-        <option value=''> -- Select -- </option>
-        {#if parks && parks.length > 0}
-          {#each parks as park}
-            <option value={park}>{park.name}</option>
-          {/each}
-        {/if}
-      </select>
-    </div>
+	<SelectInput
+		defaultOption={true}
+		bind:selectedValue={selectedPark}
+		isObjectList={true}
+		itemList={parks}
+		label='Nearest Bus Park' />
   </div>
 
   <div class="col-sm-3">

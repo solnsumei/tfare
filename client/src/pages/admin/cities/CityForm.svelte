@@ -1,18 +1,21 @@
 <script>
-	import { beforeUpdate, createEventDispatcher } from 'svelte';
+	import { beforeUpdate, afterUpdate, createEventDispatcher } from 'svelte';
 	import { validateName } from '../../../utils/validation';
 	import { saveCity } from '../../../services/admin';
 	import { showMessage } from '../../../utils/alertHelpers';
 	import { cities } from '../../../stores/admin';
+	import TextInput from '../../../components/TextInput.svelte';
+	import SelectInput from '../../../components/SelectInput.svelte';
 
 	const dispatch = createEventDispatcher();
 
 	export let city;
 
 	let nameError;
+	let countryList = ['Nigeria'];
 
-	beforeUpdate(() => {
-		if (nameError && name.length >= 2) {
+	beforeUpdate(async () => {
+		if (nameError && city.name.length >= 2) {
 			nameError = null;
 		}
 	});
@@ -65,22 +68,18 @@
 		<form on:submit|preventDefault={submitForm} >
 			<div class="row">
 				<div class="col-sm-4">
-					<div class="form-group">
-						<label for="name" class="form-control-label">Name</label>
-						<input type="text" bind:value={city.name} required class="form-control {nameError? 'is-invalid' : ''}" placeholder="Enter City Name">
-						{#if (nameError)}
-							<div class="invalid-feedback">{nameError}</div>
-						{/if}
-					</div>
+					<TextInput
+						label='Name'
+						bind:inputValue={city.name}
+						error={nameError}
+						placeholderText='Enter City Name' />
 				</div>
 
 				<div class="col-sm-3">
-					<div class="form-group">
-						<label for="country" class="form-control-label">Country</label>
-						<select bind:value={city.country} class="form-control">
-							<option value='Nigeria'>Nigeria</option>
-						</select>
-					</div>
+					<SelectInput
+						label='Country'
+						bind:selectedValue={city.country}
+						itemList={countryList} />
 				</div>
 
 				<div class="col-sm-3">
@@ -94,6 +93,5 @@
 				</div>
 			</div>
 		</form>
-
 	</div>
 </div>
