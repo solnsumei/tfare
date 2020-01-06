@@ -1,15 +1,16 @@
 import { writable } from 'svelte/store';
 
-const citiesStore = () => {
+const createItemStore = () => {
 	const { subscribe, set, update } = writable([]);
 
 	return {
 		subscribe,
-		loadCities: (cities) => set(cities),
-		updateCity: (city) => update(cities => [...cities.filter((item) => item.id !== city.id), city]),
-		deleteCity: (id) => update(cities => [...cities.filter((item) => item.id !== id)]),
+		load: (items) => set(items),
+		updateItem: (item) => update(items => [...items.filter((n) => n.id !== item.id), item]),
+		deleteItem: (id) => update(items => [...items.filter((n) => n.id !== id)]),
 		reset: () => set([]),
 	}
 }
 
-export const cities = citiesStore();
+export const cities = createItemStore();
+export const companies = createItemStore();

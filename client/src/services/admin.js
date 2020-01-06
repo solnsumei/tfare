@@ -1,42 +1,12 @@
-import { axios, setAuthHeader, validateAuthError } from '../utils/helpers';
+import { setAuthHeader } from '../utils/helpers';
+import AdminApiClient from './AdminApiClient';
 
 // Admin routes
 setAuthHeader();
 
 const urlPrefix = '/admin';
-const urlCities = `${urlPrefix}/cities`;
+const citiesUrl = `${urlPrefix}/cities`;
+const companiesUrl = `${urlPrefix}/companies`;
 
-export const getCities = async () => {
-  try {
-    const response = await axios.get(`${urlCities}`);
-    return response.data;
-  } catch (err) {
-		validateAuthError(err);
-    throw err;
-  }
-};
-
-export const saveCity = async (city) => {
-	let response;
-	try {
-		if (city.id) {
-			response = await axios.put(`${urlCities}/${city.id}`, city);
-		} else {
-			response = await axios.post(`${urlCities}`, city);
-		}
-		return response.data;
-	} catch (err) {
-		validateAuthError(err);
-		throw err;
-	}
-};
-
-export const deleteCity = async (id) => {
-  try {
-		const response = await axios.delete(`${urlCities}/${id}`);
-    return response.data;
-  } catch (err) {
-		validateAuthError(err);
-    throw err;
-  }
-};
+export const citiesApiClient = new AdminApiClient(citiesUrl);
+export const companiesApiClient = new AdminApiClient(companiesUrl);

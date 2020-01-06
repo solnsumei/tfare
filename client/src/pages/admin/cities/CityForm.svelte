@@ -1,7 +1,7 @@
 <script>
-	import { beforeUpdate, afterUpdate, createEventDispatcher } from 'svelte';
+	import { beforeUpdate, createEventDispatcher } from 'svelte';
 	import { validateName } from '../../../utils/validation';
-	import { saveCity } from '../../../services/admin';
+	import { citiesApiClient } from '../../../services/admin';
 	import { showMessage } from '../../../utils/alertHelpers';
 	import { cities } from '../../../stores/admin';
 	import TextInput from '../../../components/TextInput.svelte';
@@ -40,8 +40,8 @@
 		}
 
 		try {
-			const data = await saveCity(city);
-			cities.updateCity(data.city);
+			const data = await citiesApiClient.saveItem(city);
+			cities.updateItem(data.city);
 			resetCity();
 			showMessage({
 				icon: 'success',
@@ -85,7 +85,7 @@
 				<div class="col-sm-3">
 					<div class="form-group">
 						<label for=parks>&nbsp;</label> <br/>
-						<button class="btn btn-primary">{ city && city.id ? 'Edit City' : 'Add City' }</button>
+						<button class="btn btn-primary">{ city && city.id ? 'Save' : 'Add City' }</button>
 						{#if (city.id)}
 							<button class="btn btn-danger space-left" on:click={cancelEdit}>Cancel</button>
 						{/if}

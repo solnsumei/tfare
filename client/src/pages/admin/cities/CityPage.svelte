@@ -1,6 +1,6 @@
 <script>
-	import { onMount, afterUpdate } from 'svelte';
- 	import { getCities, deleteCity } from '../../../services/admin';
+	import { onMount } from 'svelte';
+ 	import { citiesApiClient } from '../../../services/admin';
 	import { cities } from '../../../stores/admin';
 	import { confirmAction, showMessage } from '../../../utils/alertHelpers';
 	import { sortItems } from '../../../utils/helpers';
@@ -16,8 +16,8 @@
 
 	onMount(async () => {
 		try {
-			const data = await getCities();
-			cities.loadCities(data.cities);
+			const data = await citiesApiClient.fetchItems();
+			cities.load(data.cities);
 		} catch (err) {
 			console.log(err);
 		}
@@ -31,8 +31,8 @@
 			});
 
 			if (response.value) {
-				const data = await deleteCity(city.id);
-				cities.deleteCity(city.id);
+				const data = await citiesApiClient.deleteItem(city.id);
+				cities.deleteItem(city.id);
 
 				showMessage({
 					icon: 'success',
