@@ -6,7 +6,12 @@ import CityPage from '../pages/admin/cities/CityPage.svelte';
 const adminRoutes = [
   { name: 'index', component: Dashboard },
   { name: 'cities', component: CityPage },
-  { name: 'companies', component: CompanyPage },
+	{ name: 'companies', component: CompanyPage,
+		nestedRoutes: [
+			{ name: 'create', component: CompanyPage },
+			{ name: 'edit/:id', component: CompanyPage }
+		],
+	},
 ];
 
 export default adminRoutes;

@@ -7,7 +7,6 @@
   let password = '';
 	let errorMessage;
 
-
   const login = async (event) => {
     try {
 			const response = await loginUser({ email, password });

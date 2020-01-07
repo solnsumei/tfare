@@ -1,21 +1,34 @@
 <script>
-	import { beforeUpdate, createEventDispatcher } from 'svelte';
+	import { afterUpdate, beforeUpdate } from 'svelte';
+	import { Navigate } from 'svelte-router-spa';
 	import { validateName } from '../../../utils/validation';
 	import { openUploadWidget } from '../../../utils/uploadHelpers';
+	import { navigateToRoute } from '../../../utils/helpers';
 	import { companiesApiClient } from '../../../services/admin';
 	import { showMessage } from '../../../utils/alertHelpers';
 	import { companies } from '../../../stores/admin';
 	import TextInput from '../../../components/TextInput.svelte';
-	// import SelectInput from '../../../components/SelectInput.svelte';
 
-	const dispatch = createEventDispatcher();
+	export let currentRoute;
+	export let params;
 
-	export let company;
+	const initCompany = () => ({
+		name: '',
+		logoUrl: '',
+	});
+
+	let company = initCompany();
+	$: id = currentRoute.childRoute.namedParams.id || null;
 
 	let nameError;
 	let logoError;
 	let isDisabled = false;
 
+	afterUpdate(async () => {
+		if (id && $companies.length > 0 && company && !company.id) {
+			company = $companies.find(item => item.id === Number(id));
+		}
+	});
 
 	beforeUpdate(async () => {
 		if (nameError && company.name.length >= 2) {
@@ -40,19 +53,10 @@
 			isDisabled = false;
 
 		}).open();
-	}
-
-	const resetCompany = () => {
-		dispatch('resetCompany', {
-			company: {
-				name: '',
-				logoUrl: '',
-			}
-		});
 	};
 
-	const cancelEdit = () => {
-		resetCompany();
+	const resetCompany = () => {
+		company = initCompany();
 	};
 
 	const submitForm = async (event) => {
@@ -65,10 +69,11 @@
 			const data = await companiesApiClient.saveItem(company);
 			companies.updateItem(data.company);
 			resetCompany();
-			showMessage({
+			await showMessage({
 				icon: 'success',
 				text: data.message,
 			});
+			navigateToRoute('/admin/companies');
 		} catch (err) {
 			showMessage({
 				icon: 'error',
@@ -118,9 +123,12 @@
 				<div class="col-sm-3">
 					<div class="form-group">
 						<label for=parks>&nbsp;</label> <br/>
-						<button disabled={!(company.logoUrl && company.logoUrl !== '')} class="btn btn-primary">{ company && company.id ? 'Save' : 'Add Company'}</button>
-						{#if (company.id)}
-							<button type="button" class="btn btn-danger space-left" on:click={cancelEdit}>Cancel</button>
+						<button disabled={!(company.logoUrl && company.logoUrl !== '' && !nameError && company.name.length > 2)}
+							class="btn btn-primary">{ company && company.id ? 'Save' : 'Add Company'}</button>
+						{#if (company && company.id)}
+							<Navigate to="/admin/companies">
+								<button type="button" class="btn btn-danger space-left">Cancel</button>
+							</Navigate>
 						{/if}
 					</div>
 				</div>

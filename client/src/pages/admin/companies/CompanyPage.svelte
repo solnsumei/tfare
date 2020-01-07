@@ -1,32 +1,19 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onMount, afterUpdate } from 'svelte';
+	import { Navigate } from 'svelte-router-spa';
  	import { companiesApiClient } from '../../../services/admin';
 	import { companies } from '../../../stores/admin';
 	import { confirmAction, showMessage } from '../../../utils/alertHelpers';
 	import { sortItems } from '../../../utils/helpers';
 	import CompanyForm from './CompanyForm.svelte';
 
-
 	$: companyList = $companies.sort(sortItems);
 
-	const initCompany = () => ({
-		name: '',
-		logoUrl: '',
-	});
+	export let currentRoute;
+	export let params;
 
-	let company = initCompany();
-
-	let editing = false;
-
-	const setCompany = (item) => {
-		company = item;
-		editing = true;
-	};
-
-	const handleAddReset = (value) => {
-		company = initCompany();
-		editing = value;
-	};
+	$: page = currentRoute.childRoute;
+	$: id = page ? page.namedParams.id : null;
 
 	onMount(async () => {
 		try {
@@ -60,11 +47,6 @@
 			});
 		}
 	};
-
-	const handleReset = (event) => {
-		company = event.detail.company;
-		editing = false;
-	};
 </script>
 
 <style>
@@ -77,32 +59,36 @@
 
 <div class="row">
 	<div class="col-10 top-margin">
-		{#if (!editing)}
+		{#if (!id && !page)}
 			<h3>Companies</h3>
 		{:else}
-			<h3>{company.id ? 'Edit' : 'Add'} Company</h3>
+			<h3>{id ? 'Edit' : 'Add'} Company</h3>
 		{/if}
 	</div>
 	<div class="col-2">
 		<p class="align-text-right">
-			{#if (editing)}
-				<button on:click={() => handleAddReset(false)} class="btn btn-secondary top-margin">
-					<i class="fa fa-close"></i>
-				</button>
+			{#if (id || page)}
+				<Navigate to="/admin/companies">
+					<button class="btn btn-secondary top-margin" type="button">
+						<i class="fa fa-close"></i>
+					</button>
+				</Navigate>
 			{:else}
-				<button on:click={() => handleAddReset(true)} class="btn btn-primary top-margin">
-					Add New
-				</button>
+				<Navigate to="/admin/companies/create">
+					<button class="btn btn-primary top-margin">
+						Add New
+					</button>
+				</Navigate>
 			{/if}
 		</p>
 	</div>
 </div>
 
-{#if (editing)}
-	<CompanyForm {company} on:resetCompany={handleReset}/>
+{#if (id || page)}
+	<CompanyForm {currentRoute} {params} />
 {/if}
 
-{#if (!company.id)}
+{#if (!id)}
 	<div class="row">
 		<div class="col-12">
 			<table class="table table-hover">
@@ -112,8 +98,10 @@
 							<tr>
 								<td>{item.name}</td>
 								<td>
-									{#if (!editing)}
-										<button class="btn btn-primary" on:click={() => setCompany(item)}><i class="fa fa-edit"></i></button>
+									{#if (!page)}
+										<Navigate to={`/admin/companies/edit/${item.id}`}>
+											<button class="btn btn-primary"><i class="fa fa-edit"></i></button>
+										</Navigate>
 										<button class="btn btn-danger" on:click={() => deleteItem(item)}>
 											<i class="fa fa-trash"></i>
 										</button>

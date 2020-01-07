@@ -82,14 +82,6 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
     });
 });
 
-$router->get('admin/{slug}', function () use ($router) {
-    return view('index');
-});
-
-$router->get('{slug}', function () use ($router) {
-    return view('index');
-});
-
-$router->get('/', function () use ($router) {
+$router->get('/{route:.*}/', function () use ($router) {
     return view('index');
 });
