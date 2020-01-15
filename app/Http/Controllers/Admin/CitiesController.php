@@ -11,7 +11,7 @@ use App\City;
 class CitiesController extends Controller
 {
     public function index() {
-        $models = City::orderBy('name', 'asc')->get();
+        $models = City::with('parks')->orderBy('name', 'asc')->get();
 
         return response([
             'message' => 'Items fetched successfully',
@@ -48,7 +48,7 @@ class CitiesController extends Controller
     }
 
     public function show($id) {
-        $model = City::where('id', $id)->first();
+        $model = City::with('parks')->where('id', $id)->first();
 
         if (!$model) {
             return Helper::notFoundResponse();

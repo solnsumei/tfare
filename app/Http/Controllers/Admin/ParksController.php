@@ -10,8 +10,12 @@ use Illuminate\Support\Str;
 
 class ParksController extends Controller
 {
-    public function index() {
-        $models = Park::all();
+    public function index(Request $request) {
+        $cityId = $request->query('cityId');
+
+        $models = $cityId
+            ? Park::with('city')->where('city_id', $cityId)->orderBy('name', 'asc')->get()
+            : Park::with('city')->get();
 
         return response([
             'message' => 'Items fetched successfully',
@@ -50,7 +54,7 @@ class ParksController extends Controller
     }
 
     public function show($id) {
-        $model = Park::where('id', $id)->first();
+        $model = Park::with('city')->where('id', $id)->first();
 
         if (!$model) {
             return Helper::notFoundResponse();
@@ -68,7 +72,7 @@ class ParksController extends Controller
             'city_id' => 'exists:cities,id'
         ]);
 
-        $model = Park::where('id', $id)->first();
+        $model = Park::with('city')->where('id', $id)->first();
 
         if (!$model) {
             return Helper::notFoundResponse();

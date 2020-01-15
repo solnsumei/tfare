@@ -18,8 +18,7 @@
 
   afterUpdate(async () => {
     if (fromCity && fromCity.id) {
-      const data = await getParks(fromCity.id);
-      parks = [...data.parks];
+      parks = fromCity.parks;
     }
   });
 

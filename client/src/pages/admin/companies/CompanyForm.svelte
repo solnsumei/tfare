@@ -4,13 +4,12 @@
 	import { validateName } from '../../../utils/validation';
 	import { openUploadWidget } from '../../../utils/uploadHelpers';
 	import { navigateToRoute } from '../../../utils/helpers';
-	import { companiesApiClient } from '../../../services/admin';
 	import { showMessage } from '../../../utils/alertHelpers';
+	import { companyService } from '../../../services/admin';
 	import { companies } from '../../../stores/admin';
 	import TextInput from '../../../components/TextInput.svelte';
 
 	export let currentRoute;
-	export let params;
 
 	const initCompany = () => ({
 		name: '',
@@ -18,7 +17,7 @@
 	});
 
 	let company = initCompany();
-	$: id = currentRoute.childRoute.namedParams.id || null;
+	$: id = currentRoute.namedParams.id || null;
 
 	let nameError;
 	let logoError;
@@ -26,7 +25,14 @@
 
 	afterUpdate(async () => {
 		if (id && $companies.length > 0 && company && !company.id) {
-			company = $companies.find(item => item.id === Number(id));
+			company = $companies.find(item => item.id === Number(id)) || initCompany();
+			if (company.name === '') {
+				await showMessage({
+					icon: 'error',
+					text: 'Resource not found',
+				});
+				navigateToRoute('/admin/companies');
+			}
 		}
 	});
 
@@ -65,21 +71,11 @@
 			return nameError = errors.name;
 		}
 
-		try {
-			const data = await companiesApiClient.saveItem(company);
-			companies.updateItem(data.company);
-			resetCompany();
-			await showMessage({
-				icon: 'success',
-				text: data.message,
-			});
-			navigateToRoute('/admin/companies');
-		} catch (err) {
-			showMessage({
-				icon: 'error',
-				text: err.response.data.message,
-			});
-		}
+		await companyService.save({
+			page: '/admin/companies',
+			item: company,
+			cb: resetCompany,
+		});
 	};
 </script>
 
@@ -99,40 +95,44 @@
 		margin-bottom: 15px !important;
 	}
 </style>
-<div class="row top-margin bottom-margin">
-	<div class="col-12">
-		<form on:submit|preventDefault={submitForm}>
-			<div class="row">
-				<div class="col-sm-6">
-					<div>
-						<img src={company.logoUrl} alt={company.logoUrl} />
-						<button class="space-left" type="button" on:click={uploadLogo} disabled={isDisabled}>
-						{company.logoUrl && company.logoUrl !== '' ? 'Change' : 'Add'} logo</button>
-					</div>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-4">
-					<TextInput
-						label='Company Name'
-						bind:inputValue={company.name}
-						error={nameError}
-						placeholderText='Enter Name' />
-				</div>
 
-				<div class="col-sm-3">
-					<div class="form-group">
-						<label for=parks>&nbsp;</label> <br/>
-						<button disabled={!(company.logoUrl && company.logoUrl !== '' && !nameError && company.name.length > 2)}
-							class="btn btn-primary">{ company && company.id ? 'Save' : 'Add Company'}</button>
-						{#if (company && company.id)}
-							<Navigate to="/admin/companies">
-								<button type="button" class="btn btn-danger space-left">Cancel</button>
-							</Navigate>
-						{/if}
+{#if (!(id && company.name === ''))}
+	<div class="row top-margin bottom-margin">
+		<div class="col-12">
+			<form on:submit|preventDefault={submitForm}>
+				<div class="row">
+					<div class="col-sm-6">
+						<div>
+							<img src={company.logoUrl} alt={company.logoUrl} />
+							<button class="space-left" type="button" on:click={uploadLogo} disabled={isDisabled}>
+							{company && company.logoUrl && company.logoUrl !== '' ? 'Change' : 'Add'} logo</button>
+						</div>
 					</div>
 				</div>
-			</div>
-		</form>
+				<div class="row">
+					<div class="col-sm-4">
+						<TextInput
+							label='Company Name'
+							bind:inputValue={company.name}
+							error={nameError}
+							placeholderText='Enter Name' />
+					</div>
+
+					<div class="col-sm-3">
+						<div class="form-group">
+							<label for=parks>&nbsp;</label> <br/>
+							<button disabled={!(company.logoUrl && company.logoUrl !== '' && !nameError && company.name.length > 2)}
+								class="btn btn-primary">{ company && company.id ? 'Save' : 'Add Company'}</button>
+							{#if (company && company.id)}
+								<Navigate to="/admin/companies">
+									<span class="btn btn-danger space-left">Cancel</span>
+								</Navigate>
+							{/if}
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
 	</div>
-</div>
+{/if}
+

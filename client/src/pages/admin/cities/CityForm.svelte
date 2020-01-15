@@ -1,8 +1,7 @@
 <script>
 	import { beforeUpdate, createEventDispatcher } from 'svelte';
 	import { validateName } from '../../../utils/validation';
-	import { citiesApiClient } from '../../../services/admin';
-	import { showMessage } from '../../../utils/alertHelpers';
+	import { cityService } from '../../../services/admin';
 	import { cities } from '../../../stores/admin';
 	import TextInput from '../../../components/TextInput.svelte';
 	import SelectInput from '../../../components/SelectInput.svelte';
@@ -39,28 +38,14 @@
 			return nameError = errors.name;
 		}
 
-		try {
-			const data = await citiesApiClient.saveItem(city);
-			cities.updateItem(data.city);
-			resetCity();
-			showMessage({
-				icon: 'success',
-				text: data.message,
-			});
-		} catch (err) {
-			showMessage({
-				icon: 'error',
-				text: err.response.data.message,
-			});
-		}
+		await cityService.save({
+			cb: resetCity,
+			item: city,
+		});
 	};
 </script>
 
-<style>
-	.space-left {
-		margin-left: 5px !important;
-	}
-</style>
+<style></style>
 
 <div class="top-margin"></div>
 <div class="row">
@@ -95,3 +80,4 @@
 		</form>
 	</div>
 </div>
+<div class="top-margin"></div>

@@ -14,10 +14,10 @@
 				<option value=''> -- Select -- </option>
 			{/if}
 			{#each itemList as item}
-				{#if (isObjectList && item.name)}
-					<option value={item}>{item.name}</option>
+				{#if (isObjectList && item.name && item.id)}
+					<option value={item} selected={item.id === selectedValue.id}>{item.name}</option>
 				{:else}
-					<option value={item}>{item}</option>
+					<option value={item} selected={item === selectedValue}>{item}</option>
 				{/if}
 			{/each}
 		{:else}

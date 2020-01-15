@@ -13,8 +13,7 @@ class Route extends Model
      * @var array
      */
     protected $fillable = ['source_id', 'destination_id', 'fares', 'terminal_id'];
-    protected $appends = ['from', 'to'];
-    protected $hidden = ['source', 'destination'];
+    protected $with = ['source', 'destination'];
 
     protected $casts = [
         'fares' => 'array',

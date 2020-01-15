@@ -13,14 +13,10 @@ class Park extends Model
      * @var array
      */
     protected $fillable = ['name', 'city_id', 'slug'];
-    protected $appends = ['city'];
 
-    protected $hidden = ['town'];
-
-    public function town() {
+    public function city() {
         return $this->belongsTo(City::class, 'city_id')->select(['id', 'name']);
     }
-
 
     public function getCityAttribute() {
         return $this->town->name;

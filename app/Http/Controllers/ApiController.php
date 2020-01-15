@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 class ApiController extends Controller
 {
     public function cities() {
-        $models = City::all();
+        $models = City::with('parks')->get();
 
         return response([
             "message" => "Items fetched successfully",
@@ -35,7 +35,7 @@ class ApiController extends Controller
             'park' => 'exists:parks,id'
         ]);
 
-        $models = Route::with('terminal')->where([
+        $models = Route::with('terminal', 'terminal.company', 'terminal.park')->where([
             'source_id' => $data['from'],
             'destination_id' => $data['to'],
         ]);

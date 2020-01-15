@@ -14,3 +14,6 @@ const createItemStore = () => {
 
 export const cities = createItemStore();
 export const companies = createItemStore();
+export const parks = createItemStore();
+export const terminals = createItemStore();
+export const busRoutes = createItemStore();

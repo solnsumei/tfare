@@ -12,7 +12,7 @@ class CompaniesController extends Controller
 {
 
     public function index() {
-        $models = Company::orderBy('name', 'asc')->get();
+        $models = Company::withCount('terminals')->orderBy('name', 'asc')->get();
 
         return response([
             'message' => 'Items fetched successfully',
@@ -46,7 +46,7 @@ class CompaniesController extends Controller
     }
 
     public function show($id) {
-        $model = Company::where('id', $id)->first();
+        $model = Company::with('terminals')->where('id', $id)->first();
 
         if (!$model) {
             return Helper::notFoundResponse();

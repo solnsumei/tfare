@@ -1,15 +1,27 @@
 <script>
 	import { onMount, afterUpdate } from 'svelte';
 	import { Route } from 'svelte-router-spa';
+	import { cityService, companyService } from '../services/admin';
+	import { cities, companies } from '../stores/admin';
 
 	import { logoutUser, navigateToRoute, setAuthHeader } from '../utils/helpers';
 
-
 	export let currentRoute;
-	export let params;
+	export let params = {};
 
 	let toggled = false;
 	$: pageName = currentRoute.childRoute.name;
+
+	onMount(async () => {
+		try {
+			await cityService.loadItems();
+			await companyService.loadItems();
+
+		} catch (err) {
+			console.log(err);
+		}
+
+	});
 
 	const toggleMenu = () => {
 		toggled = !toggled;
@@ -47,6 +59,40 @@
 	:global(.top-margin) {
 		margin-top: 15px !important;
 	}
+
+	:global(.space-left) {
+		margin-left: 5px !important;
+	}
+
+	:global(.small-top-margin) {
+		margin-top: 5px !important;
+	}
+
+	:global(.medium-top-margin) {
+		margin-top: 10px !important;
+	}
+
+	:global(.swal2-content) {
+		font-size: 16px !important;
+	}
+
+	:global(.swal2-title) {
+		font-size: 20px !important;
+	}
+
+	:global(.page-title) {
+		font-size: 22px !important;
+	}
+
+	:global(.subheading) {
+		font-size: 18px !important;
+	}
+
+	:global(.table td, .table th) {
+    white-space: nowrap !important;
+	}
+
+
 
 	.toggled #sidebar-wrapper {
 		margin-left: 0;
@@ -102,7 +148,7 @@
     </nav>
 
 		<div class="container-fluid">
-			<Route { currentRoute }  { params } />
+			<Route { currentRoute } { params }/>
 		</div>
   </div>
   <!-- /#page-content-wrapper -->

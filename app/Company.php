@@ -15,6 +15,6 @@ class Company extends Model
     protected $fillable = ['name', 'logoUrl', 'slug'];
 
     public function terminals() {
-        return $this->hasMany(Terminal::class)->select(['id', 'name', 'phone', 'address', 'city_id']);
+        return $this->hasMany(Terminal::class)->select(['id', 'company_id', 'name', 'phone', 'address', 'city_id', 'park_id']);
     }
 }

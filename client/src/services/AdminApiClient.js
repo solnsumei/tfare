@@ -8,9 +8,24 @@ class AdminApiClient {
 		autoBind(this);
 	}
 
-	async fetchItems() {
+	async fetchItems(query) {
 		try {
-			const response = await axios.get(this.url);
+			let url = this.url;
+			if (query) {
+				url += `?${query}`;
+			}
+
+			const response = await axios.get(url);
+			return response.data;
+		} catch (err) {
+			validateAuthError(err);
+			throw err;
+		}
+	}
+
+	async fetchItem(id) {
+		try {
+			const response = await axios.get(`${this.url}/${id}`);
 			return response.data;
 		} catch (err) {
 			validateAuthError(err);

@@ -11,7 +11,18 @@ export const confirmAction = async ({ title, text }) => Swal.fire({
 	confirmButtonText: 'Delete'
 });
 
-export const showMessage = ({ text, icon }) => Swal.fire({
-	text,
-	icon,
-});
+export const showMessage = ({ text, icon }) =>  {
+	if (icon === 'success') {
+		return Swal.fire({
+			text,
+			icon,
+			showConfirmButton: false,
+			timer: 1500,
+		});
+	}
+
+	return Swal.fire({
+		text,
+		icon,
+	});
+};

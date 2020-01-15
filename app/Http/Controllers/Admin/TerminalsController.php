@@ -10,8 +10,12 @@ use Illuminate\Support\Str;
 
 class TerminalsController extends Controller
 {
-    public function index() {
-        $models = Terminal::all();
+    public function index(Request $request) {
+        $companyId = $request->query('companyId');
+
+        $models = $companyId
+            ? Terminal::where('company_id', $companyId)->orderBy('name', 'asc')->get()
+            : Terminal::all();
 
         return response([
             'message' => 'Items fetched successfully',
@@ -23,7 +27,7 @@ class TerminalsController extends Controller
         $data = $this->validate($request, [
             'name' => 'required|min:3|max:30',
             'phone' => 'digits_between:11, 15',
-            'address' => 'min:3|max:150',
+            'address' => 'required|min:5|max:150',
             'company_id' => 'required|exists:companies,id',
             'park_id' => 'required|exists:parks,id',
             'city_id' => 'required|exists:cities,id',
@@ -56,7 +60,7 @@ class TerminalsController extends Controller
     }
 
     public function show($id) {
-        $model = Terminal::where('id', $id)->with('routes')->first();
+        $model = Terminal::where('id', $id)->with('company', 'routes')->first();
 
         if (!$model) {
             return Helper::notFoundResponse();
@@ -108,6 +112,7 @@ class TerminalsController extends Controller
         $model->company_id = $companyId;
 
         if ($model->save()) {
+            $model->refresh();
             return response([
                 'message' => 'Item updated successfully',
                 'terminal' => $model,

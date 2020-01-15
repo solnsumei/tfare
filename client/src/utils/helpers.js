@@ -49,6 +49,17 @@ export const sortItems = (a, b) => {
   return nameA < nameB ? -1 : 1;
 };
 
+export const routeSort = (a, b) => {
+	var nameA = a.source.name.toUpperCase(); // ignore upper and lowercase
+	var nameB = b.source.name.toUpperCase(); // ignore upper and lowercase
+
+	if (nameA === nameB) {
+		return 0;
+	}
+
+	return nameA < nameB ? -1 : 1;
+};
+
 export const navigateToRoute = (routeName) => navigateTo(routeName);
 
 export const isAuthenticated = () => localStorage.getItem(TOKEN);
@@ -56,3 +67,22 @@ export const isAuthenticated = () => localStorage.getItem(TOKEN);
 export const isGuest = () => !localStorage.getItem(TOKEN);
 
 export { axios };
+
+export const pageLoading = () => ({ loading: false, loadingItems: false });
+
+export const unsetLoading = () => ({ loading: false, loadingItems: false });
+
+export const initTerminal = (id) => ({
+	name: '',
+	phone: '',
+	address: '',
+	company_id: Number(id),
+});
+
+export const loadDataTable = (tagName) => {
+	if (!window.$.fn.dataTable.isDataTable(tagName)) {
+		window.$(tagName).DataTable({
+			pageLength: 50,
+		});
+	}
+}
