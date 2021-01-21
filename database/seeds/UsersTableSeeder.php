@@ -14,17 +14,17 @@ class UsersTableSeeder extends Seeder
         //
         DB::table('users')->delete();
         \App\User::create([
-            'name' => 'Solomon Nsumei',
-            'email' => 'solnsumei@gmail.com',
-            'password' => app('hash')->make('solomon1'),
+            'name' => 'Super Admin',
+            'email' => 'superAdmin@email.com',
+            'password' => app('hash')->make('your_password'),
             'isAdmin' => 1,
             'role_id' => 1,
         ]);
 
         \App\User::create([
-            'name' => 'Solomon Ejiro',
-            'email' => 'solmeiweb@gmail.com',
-            'password' => app('hash')->make('solomon1'),
+            'name' => 'Contributor',
+            'email' => 'contributor@email.com',
+            'password' => app('hash')->make('your_password'),
             'isAdmin' => 1,
             'role_id' => 2,
         ]);
